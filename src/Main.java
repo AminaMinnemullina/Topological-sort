@@ -4,7 +4,7 @@ import java.util.*;
 public class Main {
     public static void main(String[] args) throws IOException {
 
-        // GraphGenerator.generate();
+        GraphGenerator.generate();
         File dir = new File("data");
         File[] files = dir.listFiles();
 
@@ -34,20 +34,33 @@ public class Main {
                 }
                 sc.close();
 
-                try {
-                    TopologicalSort.Result res = TopologicalSort.sort(V, adj);
 
-                    double timeMs = res.timeNs / 1_000_000.0;
-                    int totalSize = V + E; // Общий размер входных данных
-
-                    csvWriter.println(V + "," + E + "," + totalSize + "," + res.iterations + "," + timeMs);
-                    System.out.println("Успешно обработан: " + file.getName());
-
-                } catch (IllegalStateException e) {
-                    System.err.println("Ошибка в файле " + file.getName() + ": " + e.getMessage());
+                for (int i = 0; i < 5; i++) {
+                    TopologicalSort.sort(V, adj);
                 }
+
+
+                int runs = 10;
+                long totalTime = 0;
+                long iterations = 0;
+
+                for (int i = 0; i < runs; i++) {
+                    TopologicalSort.Result res = TopologicalSort.sort(V, adj);
+                    totalTime += res.timeNs;
+                    iterations = res.iterations; // Одинаково, можно не суммировать
+                }
+
+                double timeMs = (totalTime / (double) runs) / 1_000_000.0;
+                int totalSize = V + E;
+
+                csvWriter.println(
+                        V + "," + E + "," + totalSize + "," + iterations + "," + timeMs
+                );
+
+                System.out.println("Обработан: " + file.getName());
             }
         }
-        System.out.println("Все тесты завершены. Результаты сохранены в results.csv");
+
+        System.out.println("Готово → results.csv");
     }
 }

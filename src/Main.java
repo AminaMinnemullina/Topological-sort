@@ -4,6 +4,7 @@ import java.util.*;
 public class Main {
     public static void main(String[] args) throws IOException {
 
+        // GraphGenerator.generate();
         File dir = new File("data");
         File[] files = dir.listFiles();
 
